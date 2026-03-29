@@ -28,9 +28,32 @@ class Player(GameSprite):
         if keys[K_DOWN] and self.rect.y < win_width - 80:
             self.rect.y += self.speed
 
+class Player2(GameSprite):
+    def update(self):
+        keys = key.get_pressed()
+        if keys[K_w] and self.rect.y > 5:
+            self.rect.y -= self.speed
+        if keys[K_s] and self.rect.y < win_width - 80:
+            self.rect.y += self.speed
+
+class Enemy(GameSprite):
+    def update(self):
+        self.rect.y += self.speed
+        global lost
+        if self.rect.y > win_height:
+            self.rect.y = 0
+            self.rect.x = randint(80, win_width - 80)
 
 
-rocketka = Player("raketka.png",600,400,15,80,100)
+
+
+
+rocketka2 = Player2("raketka.png",20,400,15,80,80)
+rocketka1 = Player("raketka.png",600,400,15,80,80)
+sharik = Enemy("sharik.png",350,400,15,60,60)
+
+speed_x = 3
+speed_y = 3
 
 finish = False
 game = True
@@ -40,9 +63,21 @@ while game:
         if e.type == QUIT:
             game = False
     if finish != True:
-        rocketka.update()
-        rocketka.reset()
 
+        rocketka1.update()
+        rocketka1.reset()
+        rocketka2.update()
+        rocketka2.reset()
+        sharik.update()
+        sharik.reset()
+
+        sharik.rect.x += speed_x
+        sharik.rect.y += speed_y
+
+
+
+    if sprite.collide_rect(rocketka1 , sharik) or sprite.collide_rect(rocketka2 , sharik):
+            speed_x *= -1
 
     display.update()
     clock.tick(FPS)
