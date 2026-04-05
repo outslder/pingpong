@@ -1,5 +1,6 @@
 from pygame import *
 from random import randint
+font.init()
 win_width = 700
 win_height = 500
 window = display.set_mode((700,500))
@@ -25,7 +26,7 @@ class Player(GameSprite):
         keys = key.get_pressed()
         if keys[K_UP] and self.rect.y > 5:
             self.rect.y -= self.speed
-        if keys[K_DOWN] and self.rect.y < win_width - 80:
+        if keys[K_DOWN] and self.rect.y < win_width - 280:
             self.rect.y += self.speed
 
 class Player2(GameSprite):
@@ -33,30 +34,36 @@ class Player2(GameSprite):
         keys = key.get_pressed()
         if keys[K_w] and self.rect.y > 5:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y < win_width - 80:
+        if keys[K_s] and self.rect.y < win_width - 280:
             self.rect.y += self.speed
 
-class Enemy(GameSprite):
-        def __init__(self,player_image,player_x,player_y,player_speed,height,width):
-            super().__init__(player_image,player_x,player_y,player_speed,height,width)
-        direction = "left"
+# class Enemy(GameSprite):
+#         def __init__(self,player_image,player_x,player_y,player_speed,height,width):
+#             super().__init__(player_image,player_x,player_y,player_speed,height,width)
+#         direction = "left"
 
-        def update(self):
-            if self.rect.x <= 0:
-                self.direction = "right"
-            if self.rect.x > win_width - 85:
-                self.direction = "left"
-            if self.direction == "left":
-                self.rect.x -= self.speed
-            else:
-                self.rect.x += self.speed
+#         def update(self):
+#             if self.rect.x <= 0:
+#                 self.direction = "right"
+#             if self.rect.x > win_width - 85:
+#                 self.direction = "left"
+#             if self.direction == "left":
+#                 self.rect.x -= self.speed
+#             else:
+#                 self.rect.x += self.speed
+
+font1 = font.SysFont("Arial" , 36)
+
+font2 = font.SysFont("Arial",36)
 
 rocketka2 = Player2("raketka.png",20,400,15,80,80)
 rocketka1 = Player("raketka.png",600,400,15,80,80)
-sharik = Enemy("sharik.png",350,400,15,60,60)
+sharik = GameSprite("sharik.png",50,50,7,60,60)
 
 speed_x = 3
 speed_y = 3
+first = 0
+second = 0
 
 finish = False
 game = True
@@ -66,32 +73,33 @@ while game:
         if e.type == QUIT:
             game = False
     if finish != True:
-
         rocketka1.update()
         rocketka1.reset()
         rocketka2.update()
         rocketka2.reset()
         sharik.update()
+        sharik.reset()
+        
 
         sharik.rect.x += speed_x
         sharik.rect.y += speed_y
 
+        if sharik.rect.y > win_height-50 or sharik.rect.y < 0:
+            speed_y *= -1
 
-
-    if sprite.collide_rect(rocketka1 , sharik) or sprite.collide_rect(rocketka2 , sharik):
+        if sprite.collide_rect(sharik , rocketka1) or sprite.collide_rect(sharik , rocketka2):
             speed_x *= -1
+
+        if sharik.rect.x > win_width - 1:
+            left_win = font1.render("Левый выиграл!", 1 , (255,255,255))
+            window.blit(left_win , (235,220))
+
+        if sharik.rect.x < 0:
+            right_win = font1.render("Правый выиграл!", 1 , (255,255,255))
+            window.blit(right_win , (235,220))
 
     display.update()
     clock.tick(FPS)
-    
-
-
-
-
-
-
-
-
 
 
 
@@ -409,6 +417,9 @@ while game:
 
 #         display.update()
 #         clock.tick(FPS)
+
+
+
 
 
 
